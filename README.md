@@ -1,8 +1,8 @@
-# 📚 Student Record Dashboard
+# Student Record Dashboard
 
 A clean and responsive **Student Record Dashboard** built using **HTML5** and **CSS3**. This project presents student information in a well-organized table with role-based details, status badges, and action buttons. It focuses on creating a simple, user-friendly interface while practicing modern HTML structure and CSS styling.
 
-## ✨ Features
+## Features
 
 * Clean and modern dashboard layout
 * Responsive student records table
@@ -12,12 +12,12 @@ A clean and responsive **Student Record Dashboard** built using **HTML5** and **
 * Card-style interface with shadows and rounded corners
 * Built with semantic HTML and organized CSS
 
-## 🛠️ Technologies Used
+## Technologies Used
 
 * HTML5
 * CSS3
 
-## 📂 Project Structure
+## Project Structure
 
 ```text
 student-record-dashboard/
@@ -25,7 +25,7 @@ student-record-dashboard/
 │── styles.css
 ```
 
-## 🎯 Purpose
+## Purpose
 
 This project was created as a frontend practice assignment to strengthen core web development skills, including:
 
@@ -35,7 +35,7 @@ This project was created as a frontend practice assignment to strengthen core we
 * Buttons and hover effects
 * Spacing, typography and visual hierarchy
 
-## 🚀 Getting Started
+## Getting Started
 
 1. Clone the repository:
 
@@ -49,7 +49,7 @@ git clone https://github.com/alishasaeeddev-bot/student-record-dashboard.git
 
 No additional installation or dependencies are required.
 
-## 📸 Preview
+## Preview
 
 The dashboard includes:
 
@@ -59,7 +59,7 @@ The dashboard includes:
 * Edit and Delete buttons
 * A clean, professional table layout
 
-## 📖 Learning Outcomes
+## Learning Outcomes
 
 While building this project, I practised:
 
@@ -72,7 +72,7 @@ While building this project, I practised:
 * Typography and spacing
 * Creating a clean and professional user interface
 
-## 🔮 Future Improvements
+## Future Improvements
 
 * Add JavaScript functionality
 * Search and filter student records
@@ -81,7 +81,7 @@ While building this project, I practised:
 * Connect with a backend database
 * Implement Create, Read, Update, and Delete (CRUD) functionality
 
-## 👩‍💻 Author
+## Author
 
 **Alisha Saeed**
 
