@@ -22,7 +22,7 @@ A clean and responsive **Student Record Dashboard** built using **HTML5** and **
 ```text
 student-record-dashboard/
 │── index.html
-│── styles.css
+│── style.css
 ```
 
 ## Purpose
