@@ -1,62 +1,16 @@
-# Task Management App — React.js
+# React + Vite
 
-An ongoing React.js implementation of the Task Management application developed as part of my React.js Internship at Lumovy Technology Solutions.
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-## Project Overview
+Currently, two official plugins are available:
 
-This project is a React.js version of the original Task Management application that was initially developed using HTML, CSS, and JavaScript.
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
 
-The React version is being developed progressively throughout the internship to practice React fundamentals and build a component-based task management application.
+## React Compiler
 
-## Current Status
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
-🚧 **In Progress**
+## Expanding the ESLint configuration
 
-### Currently Implemented
-
-- React project setup using Vite
-- Component-based structure
-- JSX
-- Reusable components
-- Props
-- Dynamic task rendering
-- Task cards
-- Task form UI
-- Task filters UI
-- Empty state component
-- Responsive CSS
-
-### Planned Features
-
-- [ ] State management with `useState`
-- [ ] Task creation
-- [ ] Task completion
-- [ ] Task filtering
-- [ ] Task editing
-- [ ] Task deletion
-- [ ] Task statistics
-- [ ] LocalStorage
-- [ ] Further UI improvements
-
-## Project Structure
-
-```text
-task-management-react/
-├── public/
-├── src/
-│   ├── components/
-│   │   ├── Header.jsx
-│   │   ├── TaskForm.jsx
-│   │   ├── TaskFilters.jsx
-│   │   ├── TaskList.jsx
-│   │   ├── TaskCard.jsx
-│   │   └── EmptyState.jsx
-│   ├── App.jsx
-│   ├── App.css
-│   └── main.jsx
-├── index.html
-├── package.json
-├── package-lock.json
-├── vite.config.js
-├── .gitignore
-└── README.md
+If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
