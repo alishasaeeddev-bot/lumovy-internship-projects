@@ -1,5 +1,4 @@
 
-
 * {
     margin: 0;
     padding: 0;
@@ -14,12 +13,27 @@
     --text-color: #1f2937;
     --secondary-text: #6b7280;
     --border-color: #d1d5db;
+    --input-background: #ffffff;
     --success-color: #22c55e;
     --warning-color: #f59e0b;
+    --danger-color: #dc2626;
+    --danger-hover: #b91c1c;
     --footer-color: #172554;
     --border-radius: 12px;
     --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     --shadow-hover: 0 8px 20px rgba(0, 0, 0, 0.12);
+}
+
+.app.dark {
+    --background-color: #111827;
+    --card-background: #1f2937;
+    --text-color: #f9fafb;
+    --secondary-text: #d1d5db;
+    --border-color: #4b5563;
+    --input-background: #374151;
+    --footer-color: #0f172a;
+    --shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+    --shadow-hover: 0 8px 20px rgba(0, 0, 0, 0.45);
 }
 
 html {
@@ -31,8 +45,15 @@ body {
     font-family: Arial, Helvetica, sans-serif;
     background-color: var(--background-color);
     color: var(--text-color);
-
     line-height: 1.6;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.app {
+    min-height: 100vh;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 header {
@@ -68,6 +89,7 @@ main {
     padding: clamp(18px, 3vw, 28px);
     border-radius: var(--border-radius);
     box-shadow: var(--shadow);
+    transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .task-form h2 {
@@ -83,17 +105,19 @@ main {
     margin-bottom: clamp(12px, 2vw, 16px);
     border: 1px solid var(--border-color);
     border-radius: 8px;
-    background-color: white;
+    background-color: var(--input-background);
     color: var(--text-color);
     font-family: inherit;
     font-size: clamp(0.9rem, 2vw, 1rem);
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
 .task-form input::placeholder {
-    color: #9ca3af;
+    color: var(--secondary-text);
 }
 
-.task-form input:focus { outline: none;
+.task-form input:focus {
+    outline: none;
     border-color: var(--primary-color);
     box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
 }
@@ -105,7 +129,7 @@ main {
     margin-bottom: clamp(12px, 2vw, 16px);
     border: 1px solid var(--border-color);
     border-radius: 8px;
-    background-color: white;
+    background-color: var(--input-background);
     color: var(--text-color);
     font-family: inherit;
     font-size: clamp(0.9rem, 2vw, 1rem);
@@ -130,18 +154,13 @@ main {
     font-size: clamp(0.9rem, 2vw, 1rem);
     font-weight: 700;
     cursor: pointer;
-    transition:
-        background-color 0.2s ease,
-        transform 0.2s ease,
-        box-shadow 0.2s ease;
+    transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .task-form button:hover {
     background-color: var(--primary-hover);
     transform: translateY(-2px);
-    box-shadow:
-        0 4px 10px
-        rgba(37, 99, 235, 0.2);
+    box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
 }
 
 .task-form button:active {
@@ -168,16 +187,13 @@ main {
     padding: 10px 16px;
     border: 1px solid var(--border-color);
     border-radius: 8px;
-    background-color: white;
+    background-color: var(--input-background);
     color: var(--text-color);
     font-family: inherit;
     font-size: 0.95rem;
     font-weight: 600;
     cursor: pointer;
-    transition:
-        background-color 0.2s ease,
-        color 0.2s ease,
-        border-color 0.2s ease;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 
 .task-filters button + button {
@@ -193,52 +209,47 @@ main {
 .task-list {
     width: 100%;
     display: grid;
-    grid-template-columns:
-        repeat(
-            auto-fit,
-            minmax(
-                min(100%, 260px),
-                1fr
-            )
-        );
-    gap:
-        clamp(14px, 2vw, 20px);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+    gap: clamp(14px, 2vw, 20px);
 }
 
 .task-list h2 {
     grid-column: 1 / -1;
     margin-bottom: 0;
-    font-size:
-        clamp(1.3rem, 3vw, 1.7rem);
+    font-size: clamp(1.3rem, 3vw, 1.7rem);
 }
 
 .task-card {
     width: 100%;
     min-width: 0;
-    min-height: clamp(180px, 25vw, 215px);
+    min-height: clamp(210px, 28vw, 250px);
     padding: clamp(16px, 2.5vw, 22px);
     background-color: var(--card-background);
     border-radius: var(--border-radius);
-    border-left:
-        4px solid
-        var(--primary-color);
+    border-left: 4px solid var(--primary-color);
     box-shadow: var(--shadow);
     transition:
         transform 0.2s ease,
-        box-shadow 0.2s ease;
+        box-shadow 0.2s ease,
+        background-color 0.3s ease;
 }
 
 .task-card:hover {
     transform: translateY(-3px);
-    box-shadow:
-        var(--shadow-hover);
+    box-shadow: var(--shadow-hover);
+}
+
+.task-card > input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin-bottom: 12px;
+    accent-color: var(--success-color);
+    cursor: pointer;
 }
 
 .task-card h3 {
-    margin-bottom:
-        clamp(10px, 2vw, 14px);
-    font-size:
-        clamp(1rem, 2.2vw, 1.2rem);
+    margin-bottom: clamp(10px, 2vw, 14px);
+    font-size: clamp(1rem, 2.2vw, 1.2rem);
     line-height: 1.4;
     overflow-wrap: anywhere;
 }
@@ -253,8 +264,47 @@ main {
     margin-top: 0;
 }
 
-.task-card p:last-child {
+.task-card p:last-of-type {
     margin-top: 10px;
+}
+
+.task-card button {
+    min-height: 38px;
+    padding: 8px 14px;
+    margin-top: 14px;
+    border: none;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition:
+        background-color 0.2s ease,
+        transform 0.2s ease;
+}
+
+.task-card button:hover {
+    transform: translateY(-1px);
+}
+
+.task-card button:first-of-type {
+    background-color: var(--primary-color);
+    color: white;
+    margin-right: 8px;
+}
+
+.task-card button:first-of-type:hover {
+    background-color: var(--primary-hover);
+}
+
+.task-card button:last-of-type {
+    background-color: var(--danger-color);
+
+    color: white;
+}
+
+.task-card button:last-of-type:hover {
+    background-color: var(--danger-hover);
 }
 
 .empty-state {
@@ -277,22 +327,56 @@ main {
     font-size: clamp(0.88rem, 2vw, 1rem);
 }
 
+
 .footer {
     width: 100%;
+
     margin-top: clamp(20px, 4vw, 30px);
-    padding: clamp(20px, 4vw, 28px) 16px;
+
+    padding:
+        clamp(20px, 4vw, 28px)
+        16px;
+
     background-color: var(--footer-color);
+
     color: white;
+
     text-align: center;
 }
 
 .footer p {
     font-size: clamp(0.82rem, 2vw, 0.95rem);
+
     opacity: 0.9;
 }
 
 .footer p + p {
     margin-top: 4px;
+}
+
+.theme-button {
+    flex-shrink: 0;
+    min-height: 40px;
+    padding: 8px 14px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 8px;
+    background-color: transparent;
+    color: white;
+    font-family: inherit;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.theme-button:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    transform: translateY(-1px);
+}
+
+.theme-button:active {
+    transform: scale(0.97);
 }
 
 @media (max-width: 480px) {
@@ -307,5 +391,14 @@ main {
 
     .task-card {
         min-height: auto;
+    }
+
+    .task-card button {
+        width: 100%;
+        margin-right: 0;
+    }
+
+    .task-card button + button {
+        margin-top: 8px;
     }
 }
