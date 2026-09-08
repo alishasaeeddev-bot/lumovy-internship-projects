@@ -1,630 +1,790 @@
-document.addEventListener('DOMContentLoaded', function() {
-    // DOM Elements
-    const themeSwitch = document.getElementById('theme-switch');
-    const addTaskBtn = document.getElementById('add-task-btn');
-    const addProjectBtn = document.getElementById('add-project-btn');
-    const sortTasksBtn = document.getElementById('sort-tasks-btn');
-    const taskModal = document.getElementById('task-modal');
-    const projectModal = document.getElementById('project-modal');
-    const sortModal = document.getElementById('sort-modal');
-    const closeBtns = document.querySelectorAll('.close-btn');
-    const taskForm = document.getElementById('task-form');
-    const projectForm = document.getElementById('project-form');
-    const tasksList = document.getElementById('tasks-list');
-    const projectsList = document.getElementById('projects-list');
-    const taskProjectSelect = document.getElementById('task-project');
-    const priorityFilter = document.getElementById('priority-filter');
-    const dateFilter = document.getElementById('date-filter');
-    const taskSearch = document.getElementById('task-search');
-    const currentViewElement = document.getElementById('current-view');
-    const totalTasksCount = document.getElementById('total-tasks-count');
-    const completedTasksCount = document.getElementById('completed-tasks-count');
-    const pendingTasksCount = document.getElementById('pending-tasks-count');
-    
-    // View buttons
-    const allTasksBtn = document.getElementById('all-tasks');
-    const todayTasksBtn = document.getElementById('today-tasks');
-    const importantTasksBtn = document.getElementById('important-tasks');
-    const completedTasksBtn = document.getElementById('completed-tasks');
-    
-    // Sort modal elements
-    const applySortBtn = document.getElementById('apply-sort-btn');
-    
-    // State
-    let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
-    let projects = JSON.parse(localStorage.getItem('projects')) || [];
-    let currentView = 'all';
-    let currentSort = { by: 'dueDate', order: 'asc' };
-    let currentFilters = { priority: 'all', date: 'all' };
-    let searchQuery = '';
-    
-    // Initialize the app
-    init();
-    
-    function init() {
-        // Load theme preference
-        const savedTheme = localStorage.getItem('theme') || 'light';
-        setTheme(savedTheme);
-        themeSwitch.checked = savedTheme === 'dark';
-        
-        // Load tasks and projects
-        renderTasks();
-        renderProjects();
-        updateStats();
-        
-        // Set up event listeners
-        setupEventListeners();
-    }
-    
-    function setTheme(theme) {
-        document.documentElement.setAttribute('data-theme', theme);
-        localStorage.setItem('theme', theme);
-    }
-    
-    function setupEventListeners() {
-        // Theme toggle
-        themeSwitch.addEventListener('change', function() {
-            setTheme(this.checked ? 'dark' : 'light');
-        });
-        
-        // Modal open buttons
-        addTaskBtn.addEventListener('click', () => openTaskModal());
-        addProjectBtn.addEventListener('click', () => openProjectModal());
-        sortTasksBtn.addEventListener('click', () => openSortModal());
-        
-        // Modal close buttons
-        closeBtns.forEach(btn => {
-            btn.addEventListener('click', function() {
-                const modal = this.closest('.modal');
-                modal.style.display = 'none';
-            });
-        });
-        
-        // Close modal when clicking outside
-        window.addEventListener('click', function(e) {
-            if (e.target.classList.contains('modal')) {
-                e.target.style.display = 'none';
-            }
-        });
-        
-        // Form submissions
-        taskForm.addEventListener('submit', handleTaskSubmit);
-        projectForm.addEventListener('submit', handleProjectSubmit);
-        
-        // Filter and search
-        priorityFilter.addEventListener('change', function() {
-            currentFilters.priority = this.value;
-            renderTasks();
-        });
-        
-        dateFilter.addEventListener('change', function() {
-            currentFilters.date = this.value;
-            renderTasks();
-        });
-        
-        taskSearch.addEventListener('input', function() {
-            searchQuery = this.value.toLowerCase();
-            renderTasks();
-        });
-        
-        // View buttons
-        allTasksBtn.addEventListener('click', () => setCurrentView('all'));
-        todayTasksBtn.addEventListener('click', () => setCurrentView('today'));
-        importantTasksBtn.addEventListener('click', () => setCurrentView('important'));
-        completedTasksBtn.addEventListener('click', () => setCurrentView('completed'));
-        
-        // Sort apply button
-        applySortBtn.addEventListener('click', applySort);
-    }
-    
-    function openTaskModal(task = null) {
-        const modalTitle = document.getElementById('modal-title');
-        const taskIdInput = document.getElementById('task-id');
-        const taskTitleInput = document.getElementById('task-title');
-        const taskDescriptionInput = document.getElementById('task-description');
-        const taskDueDateInput = document.getElementById('task-due-date');
-        const taskPriorityInput = document.getElementById('task-priority');
-        const taskProjectInput = document.getElementById('task-project');
-        const taskLabelsInput = document.getElementById('task-labels');
-        
-        // Reset form
-        taskForm.reset();
-        
-        if (task) {
-            // Edit mode
-            modalTitle.textContent = 'Edit Task';
-            taskIdInput.value = task.id;
-            taskTitleInput.value = task.title;
-            taskDescriptionInput.value = task.description || '';
-            taskDueDateInput.value = task.dueDate || '';
-            taskPriorityInput.value = task.priority;
-            taskProjectInput.value = task.project || '';
-            taskLabelsInput.value = task.labels ? task.labels.join(', ') : '';
-        } else {
-            // Add mode
-            modalTitle.textContent = 'Add New Task';
-            taskIdInput.value = '';
-            // Set default due date to today
-            const today = new Date().toISOString().split('T')[0];
-            taskDueDateInput.value = today;
-        }
-        
-        // Populate projects dropdown
-        populateProjectDropdown();
-        
-        taskModal.style.display = 'flex';
-    }
-    
-    function openProjectModal() {
-        projectForm.reset();
-        projectModal.style.display = 'flex';
-    }
-    
-    function openSortModal() {
-        // Set current sort options
-        document.querySelector(`input[name="sort"][value="${currentSort.by}"]`).checked = true;
-        document.querySelector(`input[name="order"][value="${currentSort.order}"]`).checked = true;
-        
-        sortModal.style.display = 'flex';
-    }
-    
-    function applySort() {
-        const sortBy = document.querySelector('input[name="sort"]:checked').value;
-        const sortOrder = document.querySelector('input[name="order"]:checked').value;
-        
-        currentSort = { by: sortBy, order: sortOrder };
-        renderTasks();
-        sortModal.style.display = 'none';
-    }
-    
-    function populateProjectDropdown() {
-        taskProjectSelect.innerHTML = '<option value="">No Project</option>';
-        
-        projects.forEach(project => {
-            const option = document.createElement('option');
-            option.value = project.id;
-            option.textContent = project.name;
-            taskProjectSelect.appendChild(option);
-        });
-    }
-    
-    function handleTaskSubmit(e) {
-        e.preventDefault();
-        
-        const taskId = document.getElementById('task-id').value;
-        const title = document.getElementById('task-title').value.trim();
-        const description = document.getElementById('task-description').value.trim();
-        const dueDate = document.getElementById('task-due-date').value;
-        const priority = document.getElementById('task-priority').value;
-        const projectId = document.getElementById('task-project').value;
-        const labels = document.getElementById('task-labels').value
-            .split(',')
-            .map(label => label.trim())
-            .filter(label => label);
-        
-        if (!title) {
-            alert('Task title is required!');
-            return;
-        }
-        
-        const project = projects.find(p => p.id === projectId);
-        
-        const taskData = {
-            title,
-            description,
-            dueDate: dueDate || null,
-            priority,
-            project: project ? project.id : null,
-            projectName: project ? project.name : null,
-            projectColor: project ? project.color : null,
-            labels,
-            isCompleted: false,
-            isImportant: false,
-            createdAt: new Date().toISOString()
-        };
-        
-        if (taskId) {
-            // Update existing task
-            const existingTask = tasks.find(t => t.id === taskId);
-            if (existingTask) {
-                Object.assign(existingTask, {
-                    ...taskData,
-                    isCompleted: existingTask.isCompleted,
-                    isImportant: existingTask.isImportant,
-                    id: existingTask.id
-                });
-            }
-        } else {
-            // Add new task
-            taskData.id = generateId();
-            tasks.push(taskData);
-        }
-        
-        saveTasks();
-        renderTasks();
-        updateStats();
-        taskModal.style.display = 'none';
-    }
-    
-    function handleProjectSubmit(e) {
-        e.preventDefault();
-        
-        const name = document.getElementById('project-name').value.trim();
-        const color = document.getElementById('project-color').value;
-        
-                if (!name) {
-            alert('Project name is required!');
-            return;
-        }
+const STORAGE_KEY = "taskManagementApp_v2";
 
-        const projectData = {
-            id: generateId(),
-            name,
-            color
-        };
+const DEFAULT_TASKS = [
+  {
+    id: "task-1",
+    title: "Complete JavaScript Assignment",
+    category: "Study",
+    priority: "Medium",
+    dueDate: "2026-08-12",
+    completed: false
+  },
+  {
+    id: "task-2",
+    title: "Prepare Presentation",
+    category: "University",
+    priority: "High",
+    dueDate: "2026-08-15",
+    completed: false
+  },
+  {
+    id: "task-3",
+    title: "Recreate Table Image",
+    category: "Design",
+    priority: "High",
+    dueDate: "2026-08-29",
+    completed: true
+  },
+  {
+    id: "task-4",
+    title: "Study Javascript Loops",
+    category: "Learning",
+    priority: "High",
+    dueDate: "2026-08-30",
+    completed: true
+  },
+  {
+    id: "task-5",
+    title: "GitHub Project Upload",
+    category: "Development",
+    priority: "High",
+    dueDate: "2026-08-18",
+    completed: false
+  }
+];
 
-        projects.push(projectData);
-        saveProjects();
-        renderProjects();
-        projectModal.style.display = 'none';
+function generateId() {
+  return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+}
+
+function loadTasks() {
+  try {
+    const savedTasks = localStorage.getItem(STORAGE_KEY);
+
+    if (savedTasks) {
+      const parsedTasks = JSON.parse(savedTasks);
+
+      if (Array.isArray(parsedTasks)) {
+        return parsedTasks;
+      }
     }
+  } catch (error) {
+    console.error("Unable to load tasks:", error);
+  }
 
-    function setCurrentView(view) {
-        currentView = view;
-        
-        // Update active button
-        document.querySelectorAll('.sidebar-menu button').forEach(btn => {
-            btn.classList.remove('active');
-        });
-        
-        switch(view) {
-            case 'all':
-                allTasksBtn.classList.add('active');
-                currentViewElement.textContent = 'All Tasks';
-                break;
-            case 'today':
-                todayTasksBtn.classList.add('active');
-                currentViewElement.textContent = 'Today\'s Tasks';
-                break;
-            case 'important':
-                importantTasksBtn.classList.add('active');
-                currentViewElement.textContent = 'Important Tasks';
-                break;
-            case 'completed':
-                completedTasksBtn.classList.add('active');
-                currentViewElement.textContent = 'Completed Tasks';
-                break;
-        }
-        
-        renderTasks();
-    }
+  return DEFAULT_TASKS.map(task => ({ ...task }));
+}
 
-    function renderTasks() {
-        // Filter tasks based on current view, filters and search
-        let filteredTasks = [...tasks];
-        
-        // Apply view filter
-        switch(currentView) {
-            case 'today':
-                const today = new Date().toISOString().split('T')[0];
-                filteredTasks = filteredTasks.filter(task => task.dueDate === today);
-                break;
-            case 'important':
-                filteredTasks = filteredTasks.filter(task => task.isImportant);
-                break;
-            case 'completed':
-                filteredTasks = filteredTasks.filter(task => task.isCompleted);
-                break;
-            default:
-                // 'all' view - no filter
-                break;
-        }
-        
-        // Apply priority filter
-        if (currentFilters.priority !== 'all') {
-            filteredTasks = filteredTasks.filter(task => task.priority === currentFilters.priority);
-        }
-        
-        // Apply date filter
-        if (currentFilters.date !== 'all') {
-            const today = new Date();
-            const todayStr = today.toISOString().split('T')[0];
-            
-            switch(currentFilters.date) {
-                case 'today':
-                    filteredTasks = filteredTasks.filter(task => task.dueDate === todayStr);
-                    break;
-                case 'week':
-                    const nextWeek = new Date(today);
-                    nextWeek.setDate(today.getDate() + 7);
-                    filteredTasks = filteredTasks.filter(task => {
-                        if (!task.dueDate) return false;
-                        const taskDate = new Date(task.dueDate);
-                        return taskDate >= today && taskDate <= nextWeek;
-                    });
-                    break;
-                case 'month':
-                    const nextMonth = new Date(today);
-                    nextMonth.setMonth(today.getMonth() + 1);
-                    filteredTasks = filteredTasks.filter(task => {
-                        if (!task.dueDate) return false;
-                        const taskDate = new Date(task.dueDate);
-                        return taskDate >= today && taskDate <= nextMonth;
-                    });
-                    break;
-                case 'overdue':
-                    filteredTasks = filteredTasks.filter(task => {
-                        if (!task.dueDate) return false;
-                        const taskDate = new Date(task.dueDate);
-                        return taskDate < today && !task.isCompleted;
-                    });
-                    break;
-            }
-        }
-        
-        // Apply search
-        if (searchQuery) {
-            filteredTasks = filteredTasks.filter(task => 
-                task.title.toLowerCase().includes(searchQuery)) || 
-                (task.description && task.description.toLowerCase().includes(searchQuery))
-        }
-        
-        // Sort tasks
-        filteredTasks.sort((a, b) => {
-            let compareValue = 0;
-            
-            switch(currentSort.by) {
-                case 'dueDate':
-                    const dateA = a.dueDate ? new Date(a.dueDate) : new Date('9999-12-31');
-                    const dateB = b.dueDate ? new Date(b.dueDate) : new Date('9999-12-31');
-                    compareValue = dateA - dateB;
-                    break;
-                case 'priority':
-                    const priorityOrder = { high: 1, medium: 2, low: 3 };
-                    compareValue = priorityOrder[a.priority] - priorityOrder[b.priority];
-                    break;
-                case 'createdAt':
-                    compareValue = new Date(a.createdAt) - new Date(b.createdAt);
-                    break;
-                case 'title':
-                    compareValue = a.title.localeCompare(b.title);
-                    break;
-            }
-            
-            return currentSort.order === 'asc' ? compareValue : -compareValue;
-        });
-        
-        // Render tasks
-        if (filteredTasks.length === 0) {
-            tasksList.innerHTML = `
-                <div class="empty-state">
-                    <i class="fas fa-clipboard-list"></i>
-                    <p>No tasks found. ${currentView === 'all' ? 'Add a new task to get started!' : 'Try changing your filters.'}</p>
-                </div>
-            `;
-            return;
-        }
-        
-        tasksList.innerHTML = '';
-        
-        filteredTasks.forEach(task => {
-            const taskElement = document.createElement('div');
-            taskElement.className = `task-card ${task.priority}-priority ${task.isCompleted ? 'completed' : ''}`;
-            
-            // Format due date
-            let dueDateDisplay = 'No due date';
-            if (task.dueDate) {
-                const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' };
-                dueDateDisplay = new Date(task.dueDate).toLocaleDateString(undefined, options);
-            }
-            
-            // Priority display
-            const priorityDisplay = task.priority.charAt(0).toUpperCase() + task.priority.slice(1);
-            
-            // Project display
-            let projectDisplay = '';
-            if (task.project) {
-                projectDisplay = `
-                    <div class="task-detail">
-                        <i class="fas fa-project-diagram"></i>
-                        <span class="task-project">
-                            <span class="project-color" style="background-color: ${task.projectColor}"></span>
-                            ${task.projectName}
-                        </span>
-                    </div>
-                `;
-            }
-            
-            // Labels display
-            let labelsDisplay = '';
-            if (task.labels && task.labels.length > 0) {
-                labelsDisplay = `
-                    <div class="task-labels">
-                        ${task.labels.map(label => `<span class="task-label">${label}</span>`).join('')}
-                    </div>
-                `;
-            }
-            
-            taskElement.innerHTML = `
-                <div class="task-header-row">
-                    <div class="task-title ${task.isCompleted ? 'completed' : ''}">
-                        <input type="checkbox" class="complete-checkbox" ${task.isCompleted ? 'checked' : ''} data-task-id="${task.id}">
-                        ${task.title}
-                    </div>
-                    <div class="task-actions-row">
-                        <button class="task-action-btn important ${task.isImportant ? 'active' : ''}" data-task-id="${task.id}">
-                            <i class="fas fa-star"></i>
-                        </button>
-                        <button class="task-action-btn edit" data-task-id="${task.id}">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="task-action-btn delete" data-task-id="${task.id}">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                </div>
-                ${task.description ? `<div class="task-description">${task.description}</div>` : ''}
-                <div class="task-details">
-                    <div class="task-detail">
-                        <i class="fas fa-calendar-alt"></i>
-                        <span>${dueDateDisplay}</span>
-                    </div>
-                    <div class="task-detail">
-                        <i class="fas fa-bolt"></i>
-                        <span class="task-priority ${task.priority}">${priorityDisplay}</span>
-                    </div>
-                    ${projectDisplay}
-                </div>
-                ${labelsDisplay}
-            `;
-            
-            tasksList.appendChild(taskElement);
-        });
-        
-        // Add event listeners to task actions
-        document.querySelectorAll('.complete-checkbox').forEach(checkbox => {
-            checkbox.addEventListener('change', function() {
-                const taskId = this.getAttribute('data-task-id');
-                toggleTaskComplete(taskId);
-            });
-        });
-        
-        document.querySelectorAll('.important').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const taskId = this.getAttribute('data-task-id');
-                toggleTaskImportant(taskId);
-            });
-        });
-        
-        document.querySelectorAll('.edit').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const taskId = this.getAttribute('data-task-id');
-                const task = tasks.find(t => t.id === taskId);
-                if (task) openTaskModal(task);
-            });
-        });
-        
-        document.querySelectorAll('.delete').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const taskId = this.getAttribute('data-task-id');
-                if (confirm('Are you sure you want to delete this task?')) {
-                    deleteTask(taskId);
-                }
-            });
-        });
+function saveTasks() {
+  localStorage.setItem(
+    STORAGE_KEY,
+    JSON.stringify(appState.tasks)
+  );
+}
+
+const appState = {
+  tasks: loadTasks(),
+  filter: "all",
+  search: "",
+  sort: "default",
+  editingTaskId: null
+};
+
+const elements = {
+  taskList: document.getElementById("taskList"),
+  taskCount: document.getElementById("taskCount"),
+  totalCount: document.getElementById("totalCount"),
+  completedCount: document.getElementById("completedCount"),
+  pendingCount: document.getElementById("pendingCount"),
+  progressText: document.getElementById("progressText"),
+  progressBar: document.querySelector(".progress-bar"),
+  progressFill: document.querySelector(".progress-fill"),
+  filterButtons: document.querySelectorAll(".filter-btn"),
+  allFilterCount: document.getElementById("allFilterCount"),
+  pendingFilterCount: document.getElementById("pendingFilterCount"),
+  completedFilterCount: document.getElementById("completedFilterCount"),
+  searchInput: document.getElementById("searchInput"),
+  sortSelect: document.getElementById("sortSelect"),
+  openFormBtn: document.getElementById("openFormBtn"),
+  taskModal: document.getElementById("taskModal"),
+  closeModalBtn: document.getElementById("closeModalBtn"),
+  modalTitle: document.getElementById("modalTitle"),
+  taskForm: document.getElementById("taskForm"),
+  taskTitle: document.getElementById("taskTitle"),
+  taskCategory: document.getElementById("taskCategory"),
+  taskPriority: document.getElementById("taskPriority"),
+  taskDate: document.getElementById("taskDate"),
+  formMessage: document.getElementById("formMessage"),
+  submitTaskBtn: document.getElementById("submitTaskBtn"),
+  cancelEditBtn: document.getElementById("cancelEditBtn"),
+  calculator: document.getElementById("calculator"),
+  calculatorDisplay: document.getElementById("calculatorDisplay")
+};
+
+function formatCategory(category) {
+  return category || "General";
+}
+
+function formatPriority(priority) {
+  return priority || "Medium";
+}
+
+function formatDate(date) {
+  if (!date) {
+    return "No due date";
+  }
+
+  const dateObject = new Date(`${date}T00:00:00`);
+
+  return dateObject.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric"
+  });
+}
+
+function isTaskOverdue(task) {
+  if (task.completed || !task.dueDate) {
+    return false;
+  }
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const dueDate = new Date(`${task.dueDate}T00:00:00`);
+
+  return dueDate < today;
+}
+
+function getStatistics() {
+  const total = appState.tasks.length;
+
+  const completed = appState.tasks.filter(
+    task => task.completed
+  ).length;
+
+  const pending = total - completed;
+
+  const percentage = total
+    ? Math.round((completed / total) * 100)
+    : 0;
+
+  return {
+    total,
+    completed,
+    pending,
+    percentage
+  };
+}
+
+function getVisibleTasks() {
+  let tasks = [...appState.tasks];
+
+  if (appState.filter === "completed") {
+    tasks = tasks.filter(task => task.completed);
+  }
+
+  if (appState.filter === "pending") {
+    tasks = tasks.filter(task => !task.completed);
+  }
+
+  if (appState.search) {
+    const search = appState.search.toLowerCase();
+
+    tasks = tasks.filter(task =>
+      task.title.toLowerCase().includes(search) ||
+      task.category.toLowerCase().includes(search) ||
+      task.priority.toLowerCase().includes(search)
+    );
+  }
+
+  if (appState.sort === "dueDate") {
+    tasks.sort(
+      (a, b) =>
+        new Date(a.dueDate) - new Date(b.dueDate)
+    );
+  }
+
+  if (appState.sort === "title") {
+    tasks.sort((a, b) =>
+      a.title.localeCompare(b.title)
+    );
+  }
+
+  if (appState.sort === "priority") {
+    const priorityOrder = {
+      High: 1,
+      Medium: 2,
+      Low: 3
+    };
+
+    tasks.sort(
+      (a, b) =>
+        priorityOrder[a.priority] -
+        priorityOrder[b.priority]
+    );
+  }
+
+  return tasks;
+}
+
+function createTaskCard(task) {
+  const card = document.createElement("article");
+
+  card.className = "task-card";
+
+  if (task.completed) {
+    card.classList.add("is-completed");
+  }
+
+  const title = document.createElement("h3");
+  title.textContent = task.title;
+
+  const meta = document.createElement("div");
+  meta.className = "task-meta";
+
+  const category = document.createElement("span");
+  category.className = "category";
+  category.textContent = formatCategory(task.category);
+
+  const priority = document.createElement("span");
+  priority.className = "priority";
+  priority.textContent =
+    `${formatPriority(task.priority)} Priority`;
+
+  meta.append(category, priority);
+
+  const dueDate = document.createElement("p");
+
+  dueDate.className = "due-date";
+
+  dueDate.textContent =
+    `Due: ${formatDate(task.dueDate)}`;
+
+  if (isTaskOverdue(task)) {
+    dueDate.classList.add("overdue");
+    dueDate.textContent += " (Overdue)";
+  }
+
+  const actions = document.createElement("div");
+
+  actions.className = "task-actions";
+
+  const statusButton = document.createElement("button");
+
+  statusButton.type = "button";
+  statusButton.className =
+    task.completed ? "status completed" : "status";
+
+  statusButton.dataset.action = "toggle";
+  statusButton.dataset.id = task.id;
+
+  statusButton.setAttribute(
+    "aria-pressed",
+    task.completed
+  );
+
+  statusButton.textContent =
+    task.completed ? "Completed" : "Pending";
+
+  const editButton = document.createElement("button");
+
+  editButton.type = "button";
+  editButton.className = "edit-btn";
+  editButton.dataset.action = "edit";
+  editButton.dataset.id = task.id;
+  editButton.textContent = "Edit";
+
+  const deleteButton = document.createElement("button");
+
+  deleteButton.type = "button";
+  deleteButton.className = "delete-btn";
+  deleteButton.dataset.action = "delete";
+  deleteButton.dataset.id = task.id;
+  deleteButton.textContent = "Delete";
+
+  actions.append(
+    statusButton,
+    editButton,
+    deleteButton
+  );
+
+  card.append(
+    title,
+    meta,
+    dueDate,
+    actions
+  );
+
+  return card;
+}
+
+function renderTaskList() {
+  const tasks = getVisibleTasks();
+
+  elements.taskList.innerHTML = "";
+
+  if (!tasks.length) {
+    const emptyState = document.createElement("div");
+
+    emptyState.className = "empty-state";
+
+    if (appState.search) {
+      emptyState.textContent =
+        "No tasks found for your search.";
+    } else if (appState.filter === "completed") {
+      emptyState.textContent =
+        "No completed tasks.";
+    } else if (appState.filter === "pending") {
+      emptyState.textContent =
+        "No pending tasks.";
+    } else {
+      emptyState.textContent =
+        "No tasks available.";
     }
 
-    function renderProjects() {
-        projectsList.innerHTML = '';
-        
-        if (projects.length === 0) {
-            projectsList.innerHTML = '<p class="no-projects">No projects yet</p>';
-            return;
-        }
-        
-        projects.forEach(project => {
-            const projectElement = document.createElement('div');
-            projectElement.className = 'project-item';
-            projectElement.innerHTML = `
-                <span class="project-color" style="background-color: ${project.color}"></span>
-                <span class="project-name">${project.name}</span>
-                <button class="delete-project" data-project-id="${project.id}">
-                    <i class="fas fa-times"></i>
-                </button>
-            `;
-            
-            projectElement.addEventListener('click', function(e) {
-                if (!e.target.classList.contains('delete-project') && !e.target.closest('.delete-project')) {
-                    currentView = 'all';
-                    currentFilters = { priority: 'all', date: 'all' };
-                    priorityFilter.value = 'all';
-                    dateFilter.value = 'all';
-                    setCurrentView('all');
-                    document.getElementById('task-project').value = project.id;
-                    renderTasks();
-                }
-            });
-            
-            const deleteBtn = projectElement.querySelector('.delete-project');
-            deleteBtn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                const projectId = this.getAttribute('data-project-id');
-                if (confirm('Are you sure you want to delete this project? Tasks in this project will not be deleted.')) {
-                    deleteProject(projectId);
-                }
-            });
-            
-            projectsList.appendChild(projectElement);
-        });
-        
-        // Update project dropdown in task form
-        populateProjectDropdown();
+    elements.taskList.appendChild(emptyState);
+  } else {
+    tasks.forEach(task => {
+      elements.taskList.appendChild(
+        createTaskCard(task)
+      );
+    });
+  }
+
+  elements.taskCount.textContent =
+    `${tasks.length} ${
+      tasks.length === 1 ? "Task" : "Tasks"
+    }`;
+}
+
+function updateStatistics() {
+  const {
+    total,
+    completed,
+    pending,
+    percentage
+  } = getStatistics();
+
+  elements.totalCount.textContent = total;
+  elements.completedCount.textContent = completed;
+  elements.pendingCount.textContent = pending;
+
+  elements.progressText.textContent =
+    `${percentage}% Complete`;
+
+  elements.progressFill.style.width =
+    `${percentage}%`;
+
+  elements.progressBar.setAttribute(
+    "aria-valuenow",
+    percentage
+  );
+
+  elements.allFilterCount.textContent = total;
+  elements.pendingFilterCount.textContent = pending;
+  elements.completedFilterCount.textContent = completed;
+}
+
+function updateActiveFilter() {
+  elements.filterButtons.forEach(button => {
+    button.classList.toggle(
+      "active",
+      button.dataset.filter === appState.filter
+    );
+  });
+}
+
+function refreshTaskUI() {
+  renderTaskList();
+  updateStatistics();
+  updateActiveFilter();
+}
+
+function showFormMessage(
+  message,
+  type = "error"
+) {
+  elements.formMessage.textContent = message;
+
+  elements.formMessage.className =
+    `form-message ${type}`;
+}
+
+function clearFormMessage() {
+  elements.formMessage.textContent = "";
+  elements.formMessage.className = "form-message";
+}
+
+function getTaskFormData() {
+  return {
+    title: elements.taskTitle.value.trim(),
+    category: elements.taskCategory.value,
+    priority: elements.taskPriority.value,
+    dueDate: elements.taskDate.value
+  };
+}
+
+function validateTaskForm(task) {
+  if (!task.title) {
+    return "Please enter a task title.";
+  }
+
+  if (task.title.length < 3) {
+    return "Task title must contain at least 3 characters.";
+  }
+
+  if (!task.category) {
+    return "Please select a category.";
+  }
+
+  if (!task.priority) {
+    return "Please select a priority.";
+  }
+
+  if (!task.dueDate) {
+    return "Please select a due date.";
+  }
+
+  return "";
+}
+
+function resetTaskForm() {
+  elements.taskForm.reset();
+
+  appState.editingTaskId = null;
+
+  elements.submitTaskBtn.textContent =
+    "Add Task";
+
+  elements.cancelEditBtn.hidden = true;
+
+  elements.modalTitle.textContent =
+    "Add New Task";
+
+  clearFormMessage();
+}
+
+function openTaskModal() {
+  elements.taskModal.classList.add("active");
+  elements.taskTitle.focus();
+}
+
+function closeTaskModal() {
+  elements.taskModal.classList.remove("active");
+  resetTaskForm();
+}
+
+function handleTaskSubmit(event) {
+  event.preventDefault();
+
+  const taskData = getTaskFormData();
+
+  const validationMessage =
+    validateTaskForm(taskData);
+
+  if (validationMessage) {
+    showFormMessage(validationMessage);
+    return;
+  }
+
+  if (appState.editingTaskId) {
+    const task = appState.tasks.find(
+      task =>
+        task.id === appState.editingTaskId
+    );
+
+    if (task) {
+      Object.assign(task, taskData);
+      showFormMessage(
+        "Task updated successfully.",
+        "success"
+      );
+    }
+  } else {
+    appState.tasks.push({
+      id: generateId(),
+      ...taskData,
+      completed: false
+    });
+
+    showFormMessage(
+      "Task added successfully.",
+      "success"
+    );
+  }
+
+  saveTasks();
+  refreshTaskUI();
+
+  setTimeout(() => {
+    closeTaskModal();
+  }, 500);
+}
+
+function startEditTask(id) {
+  const task = appState.tasks.find(
+    task => task.id === id
+  );
+
+  if (!task) {
+    return;
+  }
+
+  appState.editingTaskId = id;
+
+  elements.taskTitle.value = task.title;
+  elements.taskCategory.value = task.category;
+  elements.taskPriority.value = task.priority;
+  elements.taskDate.value = task.dueDate;
+
+  elements.submitTaskBtn.textContent =
+    "Update Task";
+
+  elements.cancelEditBtn.hidden = false;
+
+  elements.modalTitle.textContent =
+    "Edit Task";
+
+  clearFormMessage();
+
+  openTaskModal();
+}
+
+function deleteTask(id) {
+  const task = appState.tasks.find(
+    task => task.id === id
+  );
+
+  if (!task) {
+    return;
+  }
+
+  const confirmed = confirm(
+    `Delete "${task.title}"?`
+  );
+
+  if (!confirmed) {
+    return;
+  }
+
+  appState.tasks = appState.tasks.filter(
+    task => task.id !== id
+  );
+
+  if (appState.editingTaskId === id) {
+    resetTaskForm();
+  }
+
+  saveTasks();
+  refreshTaskUI();
+}
+
+function toggleTask(id) {
+  const task = appState.tasks.find(
+    task => task.id === id
+  );
+
+  if (!task) {
+    return;
+  }
+
+  task.completed = !task.completed;
+
+  saveTasks();
+  refreshTaskUI();
+}
+
+elements.openFormBtn.addEventListener(
+  "click",
+  openTaskModal
+);
+
+elements.closeModalBtn.addEventListener(
+  "click",
+  closeTaskModal
+);
+
+elements.cancelEditBtn.addEventListener(
+  "click",
+  closeTaskModal
+);
+
+elements.taskModal.addEventListener(
+  "click",
+  event => {
+    if (event.target === elements.taskModal) {
+      closeTaskModal();
+    }
+  }
+);
+
+elements.taskForm.addEventListener(
+  "submit",
+  handleTaskSubmit
+);
+
+elements.taskList.addEventListener(
+  "click",
+  event => {
+    const button =
+      event.target.closest("[data-action]");
+
+    if (!button) {
+      return;
     }
 
-    function toggleTaskComplete(taskId) {
-        const task = tasks.find(t => t.id === taskId);
-        if (task) {
-            task.isCompleted = !task.isCompleted;
-            saveTasks();
-            renderTasks();
-            updateStats();
-        }
+    const { action, id } = button.dataset;
+
+    if (action === "toggle") {
+      toggleTask(id);
     }
 
-    function toggleTaskImportant(taskId) {
-        const task = tasks.find(t => t.id === taskId);
-        if (task) {
-            task.isImportant = !task.isImportant;
-            saveTasks();
-            renderTasks();
-        }
+    if (action === "edit") {
+      startEditTask(id);
     }
 
-    function deleteTask(taskId) {
-        tasks = tasks.filter(t => t.id !== taskId);
-        saveTasks();
-        renderTasks();
-        updateStats();
+    if (action === "delete") {
+      deleteTask(id);
     }
+  }
+);
 
-    function deleteProject(projectId) {
-        // Remove project from projects list
-        projects = projects.filter(p => p.id !== projectId);
-        
-        // Remove project reference from tasks
-        tasks.forEach(task => {
-            if (task.project === projectId) {
-                task.project = null;
-                task.projectName = null;
-                task.projectColor = null;
-            }
-        });
-        
-        saveProjects();
-        saveTasks();
-        renderProjects();
-        renderTasks();
-    }
+elements.filterButtons.forEach(button => {
+  button.addEventListener("click", () => {
+    appState.filter =
+      button.dataset.filter;
 
-    function updateStats() {
-        const total = tasks.length;
-        const completed = tasks.filter(t => t.isCompleted).length;
-        const pending = total - completed;
-        
-        totalTasksCount.textContent = total;
-        completedTasksCount.textContent = completed;
-        pendingTasksCount.textContent = pending;
-    }
-
-    function saveTasks() {
-        localStorage.setItem('tasks', JSON.stringify(tasks));
-    }
-
-    function saveProjects() {
-        localStorage.setItem('projects', JSON.stringify(projects));
-    }
-
-    function generateId() {
-        return Date.now().toString(36) + Math.random().toString(36).substr(2);
-    }
+    refreshTaskUI();
+  });
 });
+
+elements.searchInput.addEventListener(
+  "input",
+  event => {
+    appState.search =
+      event.target.value.trim();
+
+    renderTaskList();
+  }
+);
+
+elements.sortSelect.addEventListener(
+  "change",
+  event => {
+    appState.sort =
+      event.target.value;
+
+    renderTaskList();
+  }
+);
+
+function appendToDisplay(value) {
+  elements.calculatorDisplay.value += value;
+}
+
+function clearDisplay() {
+  elements.calculatorDisplay.value = "";
+}
+
+function isValidExpression(expression) {
+  return /^[0-9+\-*/().\s]+$/.test(
+    expression
+  );
+}
+
+function calculateExpression(expression) {
+  if (
+    !expression ||
+    !isValidExpression(expression)
+  ) {
+    throw new Error("Invalid expression");
+  }
+
+  return Function(
+    `"use strict"; return (${expression})`
+  )();
+}
+
+function calculate() {
+  try {
+    const expression =
+      elements.calculatorDisplay.value;
+
+    const result =
+      calculateExpression(expression);
+
+    if (!Number.isFinite(result)) {
+      throw new Error("Invalid result");
+    }
+
+    elements.calculatorDisplay.value =
+      result;
+  } catch {
+    elements.calculatorDisplay.value =
+      "Error";
+  }
+}
+
+elements.calculator.addEventListener(
+  "click",
+  event => {
+    const button =
+      event.target.closest("button");
+
+    if (!button) {
+      return;
+    }
+
+    if (
+      button.dataset.action === "clear"
+    ) {
+      clearDisplay();
+      return;
+    }
+
+    if (
+      button.dataset.action === "calculate"
+    ) {
+      calculate();
+      return;
+    }
+
+    if (button.dataset.value) {
+      if (
+        elements.calculatorDisplay.value ===
+        "Error"
+      ) {
+        clearDisplay();
+      }
+
+      appendToDisplay(
+        button.dataset.value
+      );
+    }
+  }
+);
+
+document.addEventListener(
+  "keydown",
+  event => {
+    const activeElement =
+      document.activeElement;
+
+    const tagName =
+      activeElement.tagName;
+
+    if (
+      ["INPUT", "SELECT", "TEXTAREA"]
+        .includes(tagName)
+    ) {
+      return;
+    }
+
+    if (
+      /^[0-9+\-*/().]$/.test(event.key)
+    ) {
+      appendToDisplay(event.key);
+    }
+
+    if (event.key === "Enter") {
+      calculate();
+    }
+
+    if (event.key === "Escape") {
+      clearDisplay();
+    }
+  }
+);
+
+refreshTaskUI();
