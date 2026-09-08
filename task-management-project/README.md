@@ -1,205 +1,252 @@
 # Task Management App
 
-A responsive and interactive **Task Management Web Application** built with HTML, CSS, and JavaScript. The application helps users organize tasks, manage projects, track priorities and due dates, and monitor task completion through a clean and user-friendly interface.
+A responsive Task Management App built with HTML, CSS, and JavaScript. The application allows users to create, manage, organize, and track their tasks through a clean and user-friendly interface.
 
-This project was developed as part of my **Frontend Development learning journey during my internship at Lumovy Technology Solutions**.
-
-## Overview
-
-The Task Management App provides a practical interface for creating and organizing daily tasks. Users can manage tasks based on priority, due dates, projects, and completion status.
-
-The application also uses the browser's **LocalStorage API** to persist tasks, projects, and theme preferences without requiring a backend database.
+The project focuses on practicing core frontend development concepts including DOM manipulation, JavaScript state management, event handling, form validation, localStorage, filtering, searching, sorting, and responsive CSS.
 
 ## Features
 
-### Task Management
-
-* Add new tasks
+* Add new tasks through a modal form
 * Edit existing tasks
-* Delete tasks
-* Mark tasks as completed
-* Mark tasks as important
-* Add task descriptions
-* Assign due dates
-* Set task priorities
-* Add custom labels
-* Assign tasks to projects
+* Delete tasks with confirmation
+* Mark tasks as completed or pending
+* Display total, completed, and pending task statistics
+* Track task completion progress with a progress bar
+* Filter tasks by:
 
-### Task Organization
-
-* View all tasks
-* View today's tasks
-* View important tasks
-* View completed tasks
-* Filter tasks by priority
-* Filter tasks by due date
-* Search tasks by title or description
+  * All
+  * Pending
+  * Completed
+* Search tasks by title, category, or priority
 * Sort tasks by:
 
-  * Due Date
-  * Priority
-  * Creation Date
+  * Default order
+  * Due date
   * Title
-* Sort in ascending or descending order
-
-### Project Management
-
-* Create projects
-* Assign custom colors to projects
-* Assign tasks to projects
-* Display project information with tasks
-* Delete projects without deleting associated tasks
-
-### User Interface
-
-* Responsive design
-* Light and dark themes
-* Modern card-based layout
-* Sidebar navigation
-* Task statistics
-* Interactive buttons and controls
-* Responsive forms and modals
-* Mobile-friendly layout
+  * Priority
+* Automatically identify overdue tasks
+* Store tasks in browser localStorage
+* Form validation
+* Responsive mobile-first layout
+* Quick calculator
+* Keyboard support for calculator operations
+* Accessible form controls and labels
+* Modal-based task creation and editing
 
 ## Technologies Used
 
-* **HTML5** — Semantic structure and forms
-* **CSS3** — Responsive styling, Flexbox, CSS variables, `clamp()`, themes, and layouts
-* **JavaScript (ES6+)** — Application logic, DOM manipulation, events, filtering, sorting, and state management
-* **LocalStorage API** — Persistent client-side data storage
-* **Font Awesome** — Icons
-* **Google Fonts** — Poppins typography
-* **Visual Studio Code** — Development environment
-* **Git & GitHub** — Version control and project management
-* **Live Server** — Local development and testing
+* HTML5
+* CSS3
+* JavaScript (ES6+)
+* Browser localStorage
+* CSS Grid
+* CSS Flexbox
+* CSS `clamp()`
+* DOM Manipulation
 
 ## Project Structure
 
 ```text
-task-management-project/
+task-management-app/
 │
-├── index.html       # Application structure and UI
-├── style.css        # Responsive styling and themes
-├── script.js        # Application logic and functionality
-└── README.md        # Project documentation
+├── index.html
+├── style.css
+├── script.js
+└── README.md
 ```
 
-## JavaScript Concepts Implemented
+## How It Works
 
-This project was developed to practice practical JavaScript and DOM concepts, including:
+### Task Management
 
-* DOM selection and manipulation
-* Event listeners
-* Functions
-* Arrays and objects
-* Array methods
-* Conditional statements
-* Template literals
-* Form handling
-* Dynamic HTML generation
-* Event-driven programming
-* LocalStorage
-* JSON parsing and stringifying
-* Date handling
-* Filtering
-* Searching
-* Sorting
-* Application state management
+Users can create a task by clicking the **Add New Task** button. The task form collects:
 
-## LocalStorage
+* Task title
+* Category
+* Priority
+* Due date
 
-The application stores data in the browser using LocalStorage.
+After submission, the task is displayed in the task list.
 
-The following information is persisted:
+Each task provides options to:
 
-* Tasks
-* Projects
-* Theme preference
+* Mark the task as completed or pending
+* Edit task information
+* Delete the task
 
-This means users can refresh the page without immediately losing their locally stored application data.
+### Task Statistics
+
+The application dynamically calculates:
+
+* Total tasks
+* Completed tasks
+* Pending tasks
+
+The progress bar is also updated automatically based on the percentage of completed tasks.
+
+### Filtering
+
+Users can filter tasks using the available filter buttons:
+
+```text
+All
+Pending
+Completed
+```
+
+The task counts beside each filter are updated dynamically.
+
+### Search
+
+The search functionality allows users to search tasks by:
+
+* Task title
+* Category
+* Priority
+
+### Sorting
+
+Tasks can be sorted using the sorting dropdown:
+
+```text
+Default
+Due Date
+Title
+Priority
+```
+
+### Overdue Tasks
+
+The application compares each incomplete task's due date with the current date.
+
+If the due date has passed, the task is displayed as overdue.
+
+Completed tasks are not marked as overdue.
+
+### Local Storage
+
+Task data is stored in the browser using `localStorage`.
+
+The application uses:
+
+```js
+const STORAGE_KEY = "taskManagementApp_v2";
+```
+
+This allows tasks to remain available after refreshing or reopening the browser.
+
+No backend or database is required for this project.
 
 ## Responsive Design
 
-The application was designed to work across different screen sizes.
+The interface follows a mobile-first approach and uses modern CSS techniques including:
 
-The CSS uses modern responsive techniques such as:
-
+* CSS Grid
 * Flexbox
-* Flexible layouts
-* `flex-wrap`
-* `min()`
 * `clamp()`
-* Flexible widths
-* Responsive spacing
-* `overflow-wrap`
-* Mobile-friendly forms and modals
+* `min()`
+* `auto-fit`
+* Responsive spacing and typography
 
-The goal was to create a layout that adapts naturally to desktop, tablet, and mobile screen sizes without relying heavily on fixed dimensions.
+The layout adapts to different screen sizes without relying on multiple media queries.
 
-## Application Workflow
+## Form Validation
 
-The basic workflow of the application is:
+The task form validates user input before creating or updating a task.
 
-```text
-Create Task
-    ↓
-Set Priority / Due Date / Project
-    ↓
-Save Task
-    ↓
-Task Stored in LocalStorage
-    ↓
-Search / Filter / Sort
-    ↓
-Complete / Edit / Delete Task
+Validation includes:
+
+* Required task title
+* Minimum title length
+* Required category
+* Required priority
+* Required due date
+
+Validation messages are displayed directly inside the modal form.
+
+## Calculator
+
+The application also includes a small quick calculator for basic arithmetic operations.
+
+Supported operations include:
+
+* Addition
+* Subtraction
+* Multiplication
+* Division
+* Decimal values
+
+The calculator also supports keyboard input.
+
+## Getting Started
+
+### 1. Clone the Repository
+
+```bash
+git clone alishasaeeddev-bot/lumovy-internship-projects.git
 ```
 
-## Key Learning Outcomes
+### 2. Open the Project
 
-Through this project, I practiced building a complete frontend application from scratch and strengthened my understanding of:
+Navigate to the project directory:
 
-1. Structuring a web application using HTML5.
-2. Building responsive layouts with CSS3.
-3. Creating reusable styling patterns with CSS variables.
-4. Using JavaScript to control application behavior.
-5. Manipulating the DOM dynamically.
-6. Handling forms and user interactions.
-7. Managing application state using JavaScript.
-8. Persisting client-side data using LocalStorage.
-9. Implementing search, filtering, and sorting functionality.
-10. Building a responsive and interactive user interface.
+```bash
+cd task-management-project
+```
+
+### 3. Run the Application
+
+Since this is a frontend-only project, you can open `index.html` directly in your browser.
+
+For a better development experience, you can also use Visual Studio Code with the Live Server extension.
 
 ## Future Improvements
 
 Possible future improvements include:
 
-* Backend database integration
-* User authentication
-* Cloud data synchronization
 * Drag-and-drop task management
-* Task reminders and notifications
+* Task descriptions
+* Task categories management
+* Dark mode
 * Recurring tasks
-* Calendar integration
-* User-specific task accounts
-* React.js migration
+* Task reminders
+* Backend integration
+* User authentication
+* Cloud database storage
 * REST API integration
+* Advanced task analytics
 
-## Internship Context
+## Learning Objectives
 
-**Organization:** Lumovy Technology Solutions
-**Program:** React.js Internship / Skill Development Program
-**Project:** Task Management App
-**Development Area:** Frontend Development
-**Technologies:** HTML, CSS, JavaScript
+This project was created to strengthen practical frontend development skills and understand how JavaScript can be used to build interactive web applications.
+
+Key concepts practiced include:
+
+* JavaScript functions
+* Arrays and objects
+* Array methods such as `filter()`, `map()`, and `sort()`
+* DOM manipulation
+* Event listeners
+* Event delegation
+* Form handling
+* Form validation
+* Browser localStorage
+* Dynamic UI updates
+* State management using JavaScript
+* Responsive web design
+* CSS Grid and Flexbox
+* Accessibility basics
 
 ## Author
 
 **Alisha Saeed**
 
-Computer Science | Frontend Development
+Computer Science Graduate | Frontend Developer
 
-## Project Status
+## Internship Project
 
-**Completed**
+Developed as part of my frontend development internship at **Lumovy Technology Solutions**, with a focus on strengthening HTML, CSS, and JavaScript fundamentals and building a practical task management application.
 
-This project was created as part of my practical frontend development and JavaScript learning during my internship.
+## License
+
+This project is created for learning and portfolio purposes.
