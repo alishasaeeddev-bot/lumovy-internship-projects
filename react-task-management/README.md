@@ -98,7 +98,7 @@ Follow these steps to run the project locally.
 ### 1. Clone the Repository
 
 ```bash
-git clone YOUR_REPOSITORY_URL
+git clone alishasaeeddev-bot/lumovy-internship-projects.git
 ```
 
 ### 2. Navigate to the Project Folder
