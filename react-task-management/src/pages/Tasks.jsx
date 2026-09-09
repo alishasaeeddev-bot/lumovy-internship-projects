@@ -1,20 +1,18 @@
 import { useState } from "react";
+import { useSelector } from "react-redux";
 
-import Header from "../components/Header";
 import TaskForm from "../components/TaskForm";
 import TaskFilters from "../components/TaskFilters";
 import TaskList from "../components/Tasklist";
 import EmptyState from "../components/EmptyState";
 
-function Tasks({
-  tasks,
-  onAddTask,
-  onToggleTask,
-  onDeleteTask,
-  onUpdateTask,
-}) {
+import { selectTasks } from "../features/tasks/taskSelectors";
+
+function Tasks() {
   const [filter, setFilter] = useState("All");
   const [editingTask, setEditingTask] = useState(null);
+
+  const tasks = useSelector(selectTasks);
 
   const filteredTasks = tasks.filter((task) => {
     if (filter === "Pending") {
@@ -28,11 +26,27 @@ function Tasks({
     return true;
   });
 
+  const handleEditComplete = () => {
+    setEditingTask(null);
+  };
+
   return (
     <main className="tasks-page">
-      <TaskForm onAddTask={onAddTask} editingTask={editingTask} onUpdateTask={onUpdateTask}/>
-      <TaskFilters tasks={tasks} filter={filter} onFilterChange={setFilter}/>
-      <TaskList tasks={filteredTasks} onToggleTask={onToggleTask} onDeleteTask={onDeleteTask} onEditTask={setEditingTask}/>
+      <TaskForm
+        editingTask={editingTask}
+        onEditComplete={handleEditComplete}
+      />
+
+      <TaskFilters
+        filter={filter}
+        onFilterChange={setFilter}
+      />
+
+      <TaskList
+        tasks={filteredTasks}
+        onEditTask={setEditingTask}
+      />
+
       {tasks.length === 0 && <EmptyState />}
     </main>
   );

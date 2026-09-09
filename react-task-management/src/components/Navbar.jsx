@@ -17,11 +17,7 @@ function Navbar() {
           <NavLink to="/about">About</NavLink>
         </div>
 
-        <button
-          type="button"
-          className="theme-button"
-          onClick={toggleTheme}
-        >
+        <button type="button" className="theme-button" onClick={toggleTheme}>
           {theme === "light" ? "Dark Mode" : "Light Mode"}
         </button>
 

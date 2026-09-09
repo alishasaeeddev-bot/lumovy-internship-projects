@@ -1,9 +1,13 @@
 import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { selectTasks } from "../features/tasks/taskSelectors";
 
-function TaskDetails({ tasks }) {
+function TaskDetails() {
   const { taskId } = useParams();
-
-  const task = tasks.find((task) => task.id.toString() === taskId);
+  const tasks = useSelector(selectTasks);
+  const task = tasks.find(
+    (task) => task.id.toString() === taskId
+  );
 
   if (!task) {
     return <h1>Task Not Found</h1>;
