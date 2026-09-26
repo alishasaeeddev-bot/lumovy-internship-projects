@@ -1,252 +1,422 @@
-# Task Management App
+# Task Management System
 
-A responsive Task Management App built with HTML, CSS, and JavaScript. The application allows users to create, manage, organize, and track their tasks through a clean and user-friendly interface.
-
-The project focuses on practicing core frontend development concepts including DOM manipulation, JavaScript state management, event handling, form validation, localStorage, filtering, searching, sorting, and responsive CSS.
+A full-stack task management application built with React.js, Node.js, Express.js, and MongoDB. The application provides a complete workflow for creating, organizing, tracking, and managing tasks through multiple views, with authentication, cloud profile images, notifications, and API integration.
 
 ## Features
 
-* Add new tasks through a modal form
-* Edit existing tasks
-* Delete tasks with confirmation
-* Mark tasks as completed or pending
-* Display total, completed, and pending task statistics
-* Track task completion progress with a progress bar
-* Filter tasks by:
+### Authentication
 
-  * All
-  * Pending
+* User registration and login
+* JWT-based authentication
+* Protected routes
+* Google OAuth login
+* Secure password handling with bcrypt
+* Automatic authentication state management
+* Logout functionality
+
+### Task Management
+
+* Create, read, update, and delete tasks
+* Task status management
+
+  * To Do
+  * In Progress
   * Completed
-* Search tasks by title, category, or priority
-* Sort tasks by:
+* Task priority levels
 
-  * Default order
-  * Due date
-  * Title
-  * Priority
-* Automatically identify overdue tasks
-* Store tasks in browser localStorage
-* Form validation
-* Responsive mobile-first layout
-* Quick calculator
-* Keyboard support for calculator operations
-* Accessible form controls and labels
-* Modal-based task creation and editing
+  * Low
+  * Medium
+  * High
+* Task categories
+* Task tags
+* Due dates
+* Task details page
+* User-specific task data
 
-## Technologies Used
+### Dashboard
 
-* HTML5
-* CSS3
-* JavaScript (ES6+)
-* Browser localStorage
-* CSS Grid
-* CSS Flexbox
-* CSS `clamp()`
-* DOM Manipulation
+* Overview of task activity
+* Task statistics
+* Task status summary
+* Task priority information
+* Deadline tracking
+
+### Kanban Board
+
+* Visual task management
+* Tasks organized by status
+* Drag-and-drop task movement
+* Dynamic task status updates
+
+### Calendar
+
+* Calendar-based task visualization
+* Tasks displayed according to their due dates
+* Easy deadline tracking
+
+### Profile Management
+
+* View and update user information
+* Upload profile images
+* Profile images stored using Cloudinary
+* Delete profile images
+* Google account security information
+* Password management for local accounts
+
+### Notifications
+
+* Notification system
+* Task-related notifications
+* Notification API
+* Notification indicator in the application header
+
+### API Integration
+
+* REST API communication using Axios
+* Protected API requests using JWT
+* External API data page
+* Centralized Axios configuration
+* Automatic handling of unauthorized requests
+
+### User Experience
+
+* Responsive interface
+* Light and dark themes
+* Reusable React components
+* Client-side routing
+* Custom 404 page
+* Clean and structured UI
+
+## Tech Stack
+
+### Frontend
+
+* React.js
+* Vite
+* React Router
+* Redux Toolkit
+* Axios
+* FullCalendar
+* @dnd-kit
+* CSS
+
+### Backend
+
+* Node.js
+* Express.js
+* MongoDB
+* Mongoose
+* JWT
+* bcrypt
+* Passport
+* Google OAuth
+* Multer
+* Cloudinary
+* CORS
+
+### Development Tools
+
+* Git
+* GitHub
+* Visual Studio Code
+* npm
+
+## Application Architecture
+
+The application follows a client-server architecture.
+
+```text
+React Frontend
+      |
+      | Axios / REST API
+      |
+Express.js Backend
+      |
+      | Mongoose
+      |
+MongoDB Atlas
+```
+
+Cloudinary is used separately for storing and managing user profile images.
 
 ## Project Structure
 
 ```text
-task-management-app/
+react-task-management/
 │
+├── backend/
+│   ├── config/
+│   │   ├── cloudinary.js
+│   │   └── db.js
+│   │
+│   ├── middleware/
+│   │   ├── authMiddleware.js
+│   │   └── uploadMiddleware.js
+│   │
+│   ├── models/
+│   │   ├── Notification.js
+│   │   ├── Task.js
+│   │   └── User.js
+│   │
+│   ├── routes/
+│   │   ├── authRoutes.js
+│   │   ├── notificationRoutes.js
+│   │   └── taskRoutes.js
+│   │
+│   ├── server.js
+│   ├── package.json
+│   └── package-lock.json
+│
+├── src/
+│   ├── app/
+│   │   └── store.jsx
+│   │
+│   ├── components/
+│   │   ├── Footer.jsx
+│   │   ├── GoogleLoginButton.jsx
+│   │   ├── Header.jsx
+│   │   ├── NotificationBell.jsx
+│   │   ├── ProtectedRoute.jsx
+│   │   ├── TaskCard.jsx
+│   │   ├── TaskDetails.jsx
+│   │   ├── TaskForm.jsx
+│   │   └── Tasklist.jsx
+│   │
+│   ├── context/
+│   │   └── AuthContext.jsx
+│   │
+│   ├── features/
+│   │   └── tasks/
+│   │       └── tasksSlice.jsx
+│   │
+│   ├── layouts/
+│   │   └── AppLayout.jsx
+│   │
+│   ├── pages/
+│   │   ├── ApiData.jsx
+│   │   ├── Calendar.jsx
+│   │   ├── Dashboard.jsx
+│   │   ├── Kanban.jsx
+│   │   ├── Login.jsx
+│   │   ├── NotFound.jsx
+│   │   ├── Profile.jsx
+│   │   ├── Signup.jsx
+│   │   └── Tasks.jsx
+│   │
+│   ├── utils/
+│   │   └── taskDeadline.js
+│   │
+│   ├── api.js
+│   ├── App.jsx
+│   ├── App.css
+│   └── main.jsx
+│
+├── .env.example
+├── .gitignore
 ├── index.html
-├── style.css
-├── script.js
+├── package.json
 └── README.md
 ```
 
-## How It Works
+## Authentication Flow
 
-### Task Management
-
-Users can create a task by clicking the **Add New Task** button. The task form collects:
-
-* Task title
-* Category
-* Priority
-* Due date
-
-After submission, the task is displayed in the task list.
-
-Each task provides options to:
-
-* Mark the task as completed or pending
-* Edit task information
-* Delete the task
-
-### Task Statistics
-
-The application dynamically calculates:
-
-* Total tasks
-* Completed tasks
-* Pending tasks
-
-The progress bar is also updated automatically based on the percentage of completed tasks.
-
-### Filtering
-
-Users can filter tasks using the available filter buttons:
+The application uses JWT authentication to protect user-specific resources.
 
 ```text
-All
-Pending
-Completed
+User Login
+    ↓
+Express Authentication API
+    ↓
+Credentials Verification
+    ↓
+JWT Token Generated
+    ↓
+Token Stored in Browser
+    ↓
+Axios Adds Bearer Token
+    ↓
+Protected Express Route
+    ↓
+User ID Extracted From Token
+    ↓
+User-Specific MongoDB Data
 ```
 
-The task counts beside each filter are updated dynamically.
+Google authentication is also supported for users who prefer signing in with their Google account.
 
-### Search
+## Task Data Flow
 
-The search functionality allows users to search tasks by:
-
-* Task title
-* Category
-* Priority
-
-### Sorting
-
-Tasks can be sorted using the sorting dropdown:
+Tasks are stored in MongoDB and associated with the authenticated user.
 
 ```text
-Default
-Due Date
-Title
-Priority
+React Component
+      ↓
+Redux / Axios
+      ↓
+Express REST API
+      ↓
+JWT Authentication
+      ↓
+Task Controller / Route
+      ↓
+Mongoose
+      ↓
+MongoDB Atlas
 ```
 
-### Overdue Tasks
+This ensures that each authenticated user can access and manage their own tasks.
 
-The application compares each incomplete task's due date with the current date.
+## Environment Variables
 
-If the due date has passed, the task is displayed as overdue.
+Create the required environment variables for the backend.
 
-Completed tasks are not marked as overdue.
-
-### Local Storage
-
-Task data is stored in the browser using `localStorage`.
-
-The application uses:
-
-```js
-const STORAGE_KEY = "taskManagementApp_v2";
+```env
+PORT=5000
+MONGO_URI=
+JWT_SECRET=
+CLIENT_URL=http://localhost:5173
+GOOGLE_CLIENT_ID=
+CLOUDINARY_CLOUD_NAME=
+CLOUDINARY_API_KEY=
+CLOUDINARY_API_SECRET=
 ```
 
-This allows tasks to remain available after refreshing or reopening the browser.
+Never commit actual credentials or secret values to GitHub.
 
-No backend or database is required for this project.
-
-## Responsive Design
-
-The interface follows a mobile-first approach and uses modern CSS techniques including:
-
-* CSS Grid
-* Flexbox
-* `clamp()`
-* `min()`
-* `auto-fit`
-* Responsive spacing and typography
-
-The layout adapts to different screen sizes without relying on multiple media queries.
-
-## Form Validation
-
-The task form validates user input before creating or updating a task.
-
-Validation includes:
-
-* Required task title
-* Minimum title length
-* Required category
-* Required priority
-* Required due date
-
-Validation messages are displayed directly inside the modal form.
-
-## Calculator
-
-The application also includes a small quick calculator for basic arithmetic operations.
-
-Supported operations include:
-
-* Addition
-* Subtraction
-* Multiplication
-* Division
-* Decimal values
-
-The calculator also supports keyboard input.
-
-## Getting Started
+## Installation
 
 ### 1. Clone the Repository
 
 ```bash
-git clone alishasaeeddev-bot/lumovy-internship-projects.git
+git clone https://github.com/alishasaeeddev-bot/lumovy-internship-projects.git
 ```
 
-### 2. Open the Project
-
-Navigate to the project directory:
+Navigate to the project:
 
 ```bash
-cd task-management-project
+cd lumovy-internship-projects/react-task-management
 ```
 
-### 3. Run the Application
+### 2. Install Frontend Dependencies
 
-Since this is a frontend-only project, you can open `index.html` directly in your browser.
+```bash
+npm install
+```
 
-For a better development experience, you can also use Visual Studio Code with the Live Server extension.
+### 3. Install Backend Dependencies
+
+```bash
+cd backend
+npm install
+```
+
+### 4. Configure Environment Variables
+
+Create a `.env` file inside the `backend` directory and add the required environment variables.
+
+### 5. Start the Backend
+
+From the `backend` directory:
+
+```bash
+npm run dev
+```
+
+The backend runs on:
+
+```text
+http://localhost:5000
+```
+
+### 6. Start the Frontend
+
+Open another terminal and navigate to the project root:
+
+```bash
+cd react-task-management
+```
+
+Run:
+
+```bash
+npm run dev
+```
+
+The frontend runs on:
+
+```text
+http://localhost:5173
+```
+
+## API
+
+The backend provides REST API endpoints for:
+
+* Authentication
+* User profiles
+* Tasks
+* Notifications
+* Profile image management
+
+The API uses JWT bearer tokens for protected requests.
+
+Example:
+
+```text
+Authorization: Bearer <token>
+```
+
+## Production Build
+
+To create a production build of the React application:
+
+```bash
+npm run build
+```
+
+To preview the production build locally:
+
+```bash
+npm run preview
+```
+
+## Security
+
+The application includes several security-related practices:
+
+* JWT authentication
+* Password hashing with bcrypt
+* Protected API routes
+* Protected frontend routes
+* Environment variables for sensitive configuration
+* CORS configuration
+* User-specific database queries
+* Secure handling of Cloudinary credentials
+
+Sensitive environment files are excluded from Git using `.gitignore`.
 
 ## Future Improvements
 
 Possible future improvements include:
 
-* Drag-and-drop task management
-* Task descriptions
-* Task categories management
-* Dark mode
-* Recurring tasks
-* Task reminders
-* Backend integration
-* User authentication
-* Cloud database storage
-* REST API integration
-* Advanced task analytics
-
-## Learning Objectives
-
-This project was created to strengthen practical frontend development skills and understand how JavaScript can be used to build interactive web applications.
-
-Key concepts practiced include:
-
-* JavaScript functions
-* Arrays and objects
-* Array methods such as `filter()`, `map()`, and `sort()`
-* DOM manipulation
-* Event listeners
-* Event delegation
-* Form handling
-* Form validation
-* Browser localStorage
-* Dynamic UI updates
-* State management using JavaScript
-* Responsive web design
-* CSS Grid and Flexbox
-* Accessibility basics
+* Real-time notifications using Socket.IO
+* Task search and advanced filtering
+* Pagination
+* Email notifications
+* Task sharing and collaboration
+* Team workspaces
+* Role-based access control
+* File attachments
+* Activity history
+* Advanced analytics
+* Deployment with production environment configuration
 
 ## Author
 
 **Alisha Saeed**
 
-Computer Science Graduate | Frontend Developer
-
-## Internship Project
-
-Developed as part of my frontend development internship at **Lumovy Technology Solutions**, with a focus on strengthening HTML, CSS, and JavaScript fundamentals and building a practical task management application.
+Computer Science Graduate and Full-Stack Developer focused on building modern web applications with React.js, Node.js, Express.js, and MongoDB.
 
 ## License
 
-This project is created for learning and portfolio purposes.
+This project is intended for learning, development, and portfolio purposes.
