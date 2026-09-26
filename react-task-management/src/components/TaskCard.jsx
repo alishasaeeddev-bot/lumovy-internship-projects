@@ -1,34 +1,111 @@
-import { Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { toggleTask, deleteTask } from "../features/tasks/tasksSlice";
 
-function TaskCard({ task, onEditTask }) {
-  const dispatch = useDispatch();
+import { Link } from "react-router-dom";
+import { getTaskDeadlineStatus } from "../utils/taskDeadline";
+import "./TaskCard.css";
+
+function TaskCard({ task, onEdit, onDelete }) {
+  const taskId = task._id || task.id;
+
+  const taskStatus =
+    task.status || (task.completed ? "completed" : "todo");
+
+  const formattedStatus =
+    taskStatus === "in-progress"
+      ? "In Progress"
+      : taskStatus === "completed"
+      ? "Completed"
+      : "To Do";
+
+  const formattedPriority =
+    task.priority?.charAt(0).toUpperCase() +
+      task.priority?.slice(1) || "Medium";
+
+  const formattedDueDate = task.dueDate
+    ? new Date(task.dueDate).toLocaleDateString()
+    : "No due date";
+
+  const deadline = getTaskDeadlineStatus(task.dueDate);
 
   return (
     <article className="task-card">
-      <input
-        type="checkbox"
-        checked={task.completed}
-        onChange={() => dispatch(toggleTask(task.id))}
-      />
+      <div className="task-card-header">
+        <div>
+          <h3>{task.title}</h3>
 
-      <Link to={`/tasks/${task.id}`}><h3>{task.title}</h3></Link>
+          {task.category && (
+            <span className="task-category">
+              {task.category}
+            </span>
+          )}
+        </div>
 
-      <p>Category: {task.category}</p>
-      <p>Priority: {task.priority}</p>
-      <p>Status: {task.completed ? "Completed" : "Pending"}</p>
-      <p>Due: {task.dueDate}</p>
+        <span className={`task-priority ${task.priority}`}>
+          {formattedPriority}
+        </span>
+      </div>
 
-      {!task.completed && (
-        <button onClick={() => onEditTask(task)}> Update </button>
+      {task.description && (
+        <p className="task-description">
+          {task.description}
+        </p>
       )}
 
-      {task.completed && (
-        <button onClick={() => dispatch(toggleTask(task.id))}> Undo </button>
+      {Array.isArray(task.tags) && task.tags.length > 0 && (
+        <div className="task-tags">
+          {task.tags.map((tag, index) => (
+            <span
+              key={`${tag}-${index}`}
+              className="task-tag"
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
       )}
 
-      <button onClick={() => dispatch(deleteTask(task.id))}> Delete </button>
+      <div className="task-card-info">
+        <div>
+          <span className="info-label">Status</span>
+
+          <span className={`task-status ${taskStatus}`}>
+            {formattedStatus}
+          </span>
+        </div>
+
+        <div>
+          <span className="info-label">Due Date</span>
+
+          <span>{formattedDueDate}</span>
+
+          {deadline.status !== "none" && (
+            <span
+              className={`task-deadline ${deadline.status}`}
+            >
+              {deadline.label}
+            </span>
+          )}
+        </div>
+      </div>
+
+      <div className="task-card-actions">
+        <Link to={`/tasks/${taskId}`}>
+          View Details
+        </Link>
+
+        <button
+          type="button"
+          onClick={() => onEdit(task)}
+        >
+          Edit
+        </button>
+
+        <button
+          type="button"
+          onClick={() => onDelete(task)}
+        >
+          Delete
+        </button>
+      </div>
     </article>
   );
 }

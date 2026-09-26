@@ -1,0 +1,502 @@
+.calendar-page {
+    width: min(100%, 1400px);
+    margin: 0 auto;
+    padding: 32px 24px 50px;
+    box-sizing: border-box;
+    color: var(--text-color);
+}
+
+.calendar-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: 30px;
+}
+
+.calendar-label {
+    margin: 0 0 6px;
+    color: var(--primary-color);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+}
+
+.calendar-header h1 {
+    margin: 0;
+    color: var(--text-color);
+    font-size: clamp(2rem, 4vw, 2.7rem);
+    line-height: 1.2;
+}
+
+.calendar-subtitle {
+    margin: 8px 0 0;
+    color: var(--secondary-text);
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+.calendar-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
+    padding: 0 18px;
+    border-radius: 8px;
+    background-color: var(--primary-color);
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+    transition:
+        background-color 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.calendar-action:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 5px 12px rgba(37, 99, 235, 0.2);
+}
+
+.calendar-action:active {
+    transform: translateY(0);
+}
+
+.calendar-action:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.calendar-card {
+    width: 100%;
+    padding: 24px;
+    box-sizing: border-box;
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    background-color: var(--card-background);
+    color: var(--text-color);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    transition:
+        background-color 0.3s ease,
+        border-color 0.3s ease,
+        color 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+.calendar-card .fc {
+    color: var(--text-color);
+}
+
+.calendar-card .fc-theme-standard td,
+.calendar-card .fc-theme-standard th {
+    border-color: var(--border-color);
+}
+
+.calendar-card .fc-col-header-cell {
+    background-color: var(--background-color);
+}
+
+.calendar-card .fc-col-header-cell-cushion {
+    padding: 12px 4px;
+    color: var(--secondary-text);
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.calendar-card .fc-daygrid-day {
+    background-color: var(--card-background);
+    transition: background-color 0.2s ease;
+}
+
+.calendar-card .fc-daygrid-day:hover {
+    background-color: var(--background-color);
+}
+
+.calendar-card .fc-daygrid-day-number {
+    padding: 10px;
+    color: var(--text-color);
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.calendar-card .fc-day-today {
+    background-color: rgba(37, 99, 235, 0.06);
+}
+
+.calendar-card .fc-day-today .fc-daygrid-day-number {
+    color: var(--primary-color);
+    font-weight: 700;
+}
+
+.calendar-card .fc-toolbar {
+    margin-bottom: 24px;
+}
+
+.calendar-card .fc-toolbar-title {
+    color: var(--text-color);
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.calendar-card .fc-button {
+    border: 1px solid var(--border-color);
+    border-radius: 7px;
+    background-color: var(--card-background);
+    color: var(--text-color);
+    box-shadow: none;
+    font-size: 13px;
+    font-weight: 600;
+    transition:
+        background-color 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease;
+}
+
+.calendar-card .fc-button:hover {
+    border-color: var(--primary-color);
+    background-color: var(--background-color);
+    color: var(--primary-color);
+}
+
+.calendar-card .fc-button:focus {
+    box-shadow: none;
+}
+
+.calendar-card .fc-button:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.calendar-card .fc-button-primary:not(:disabled).fc-button-active,
+.calendar-card .fc-button-primary:not(:disabled):active {
+    border-color: var(--primary-color);
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.calendar-card .fc-button-primary:disabled {
+    opacity: 0.6;
+}
+
+.calendar-card .fc-event {
+    margin: 2px 4px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.calendar-card .fc-event-title {
+    padding: 2px 4px;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+.calendar-card .fc-event.calendar-task-high {
+    background-color: var(--danger-color);
+    border-color: var(--danger-color);
+    color: white;
+}
+
+.calendar-card .fc-event.calendar-task-medium {
+    background-color: var(--warning-color);
+    border-color: var(--warning-color);
+    color: white;
+}
+
+.calendar-card .fc-event.calendar-task-low {
+    background-color: var(--success-color);
+    border-color: var(--success-color);
+    color: white;
+}
+
+.calendar-card .fc-more-link {
+    color: var(--primary-color);
+    font-size: 12px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.calendar-card .fc-more-link:hover {
+    color: var(--primary-hover);
+}
+
+.calendar-card .fc-popover {
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    background-color: var(--card-background);
+    color: var(--text-color);
+    box-shadow: var(--shadow-hover);
+}
+
+.calendar-card .fc-popover-header {
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+.calendar-card .fc-popover-title {
+    font-weight: 600;
+}
+
+.calendar-card .fc-list-event:hover td {
+    background-color: var(--background-color);
+}
+
+.calendar-card .fc-timegrid-slot {
+    height: 48px;
+}
+
+.calendar-card .fc-timegrid-axis-cushion {
+    color: var(--secondary-text);
+    font-size: 12px;
+}
+
+.calendar-card .fc-timegrid-slot-label-cushion {
+    color: var(--secondary-text);
+    font-size: 12px;
+}
+
+.calendar-card .fc-timegrid-col {
+    background-color: var(--card-background);
+}
+
+.calendar-card .fc-timegrid-now-indicator-line {
+    border-color: var(--primary-color);
+}
+
+.calendar-card .fc-timegrid-now-indicator-arrow {
+    border-color: var(--primary-color);
+}
+
+.calendar-card .fc-timegrid-event {
+    border-radius: 5px;
+}
+
+.calendar-card .fc-v-event .fc-event-main {
+    padding: 4px 6px;
+}
+
+.calendar-card .fc-daygrid-day.fc-day-today,
+.calendar-card .fc-timegrid-col.fc-day-today {
+    background-color: rgba(37, 99, 235, 0.06);
+}
+
+.calendar-legend {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 18px;
+    margin-top: 20px;
+    padding-top: 18px;
+    border-top: 1px solid var(--border-color);
+}
+
+.calendar-legend-title {
+    color: var(--text-color);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.calendar-legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    color: var(--secondary-text);
+    font-size: 13px;
+}
+
+.calendar-legend-dot {
+    width: 9px;
+    height: 9px;
+    flex-shrink: 0;
+    border-radius: 50%;
+}
+
+.calendar-legend-dot.high {
+    background-color: var(--danger-color);
+}
+
+.calendar-legend-dot.medium {
+    background-color: var(--warning-color);
+}
+
+.calendar-legend-dot.low {
+    background-color: var(--success-color);
+}
+
+@media (max-width: 900px) {
+    .calendar-page {
+        padding: 28px 18px 45px;
+    }
+
+    .calendar-header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 18px;
+    }
+
+    .calendar-action {
+        width: 100%;
+    }
+
+    .calendar-card {
+        padding: 18px;
+    }
+
+    .calendar-card .fc-toolbar {
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+
+    .calendar-card .fc-toolbar-chunk {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 4px;
+    }
+
+    .calendar-card .fc-toolbar-title {
+        font-size: 20px;
+    }
+}
+
+@media (max-width: 650px) {
+    .calendar-page {
+        padding: 24px 14px 40px;
+    }
+
+    .calendar-header {
+        margin-bottom: 22px;
+    }
+
+    .calendar-header h1 {
+        font-size: 1.9rem;
+    }
+
+    .calendar-subtitle {
+        font-size: 14px;
+    }
+
+    .calendar-card {
+        padding: 12px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .calendar-card .fc {
+        min-width: 600px;
+    }
+
+    .calendar-card .fc-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 2px;
+        margin-bottom: 18px;
+    }
+
+    .calendar-card .fc-toolbar-chunk {
+        justify-content: center;
+    }
+
+    .calendar-card .fc-toolbar-title {
+        font-size: 18px;
+        text-align: center;
+    }
+
+    .calendar-card .fc-button {
+        padding: 6px 9px;
+        font-size: 12px;
+    }
+
+    .calendar-card .fc-col-header-cell-cushion {
+        padding: 9px 3px;
+        font-size: 12px;
+    }
+
+    .calendar-card .fc-daygrid-day-number {
+        padding: 8px;
+        font-size: 12px;
+    }
+
+    .calendar-legend {
+        min-width: 600px;
+        gap: 14px;
+        margin-top: 16px;
+        padding-top: 14px;
+        padding-left: 2px;
+    }
+
+    .calendar-legend-item,
+    .calendar-legend-title {
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 450px) {
+    .calendar-page {
+        padding: 20px 10px 35px;
+    }
+
+    .calendar-card {
+        padding: 9px;
+        border-radius: 12px;
+    }
+
+    .calendar-card .fc {
+        min-width: 560px;
+    }
+
+    .calendar-card .fc-toolbar {
+        gap: 9px;
+    }
+
+    .calendar-card .fc-toolbar-chunk {
+        gap: 3px;
+    }
+
+    .calendar-card .fc-button {
+        padding: 5px 7px;
+        font-size: 11px;
+    }
+
+    .calendar-card .fc-toolbar-title {
+        font-size: 17px;
+    }
+
+    .calendar-card .fc-event {
+        margin: 1px 3px;
+        font-size: 11px;
+    }
+
+    .calendar-card .fc-event-title {
+        padding: 2px 3px;
+    }
+
+    .calendar-legend {
+        min-width: 560px;
+    }
+}
+
+@media (max-width: 360px) {
+    .calendar-page {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    .calendar-card {
+        padding: 7px;
+    }
+
+    .calendar-card .fc {
+        min-width: 520px;
+    }
+
+    .calendar-legend {
+        min-width: 520px;
+    }
+}

@@ -1,0 +1,77 @@
+.not-found-page {
+    min-height: calc(100vh - 70px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 24px;
+    box-sizing: border-box;
+    color: var(--text-color);
+    text-align: center;
+}
+
+.not-found-content {
+    width: min(100%, 600px);
+}
+
+.not-found-code {
+    margin: 0;
+    color: var(--primary-color);
+    font-size: clamp(5rem, 15vw, 9rem);
+    font-weight: 800;
+    line-height: 0.9;
+    letter-spacing: -4px;
+}
+
+.not-found-content h1 {
+    margin: 24px 0 10px;
+    color: var(--text-color);
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    line-height: 1.2;
+}
+
+.not-found-message {
+    margin: 0;
+    color: var(--secondary-text);
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+@media (max-width: 650px) {
+    .not-found-page {
+        min-height: calc(100vh - 60px);
+        padding: 32px 20px;
+    }
+
+    .not-found-code {
+        font-size: 6rem;
+        letter-spacing: -3px;
+    }
+
+    .not-found-content h1 {
+        margin-top: 20px;
+        font-size: 2rem;
+    }
+
+    .not-found-message {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 400px) {
+    .not-found-page {
+        padding: 26px 16px;
+    }
+
+    .not-found-code {
+        font-size: 5rem;
+        letter-spacing: -2px;
+    }
+
+    .not-found-content h1 {
+        font-size: 1.7rem;
+    }
+
+    .not-found-message {
+        font-size: 13px;
+    }
+}

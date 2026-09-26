@@ -1,18 +1,17 @@
 import TaskCard from "./TaskCard";
 
-function TaskList({ tasks, onEditTask }) {
+function TaskList({ tasks, onEdit, onDelete }) {
   return (
-    <section className="task-list">
-      <h2>Tasks</h2>
-
+    <div className="task-list">
       {tasks.map((task) => (
         <TaskCard
-          key={task.id}
+          key={task._id || task.id}
           task={task}
-          onEditTask={onEditTask}
+          onEdit={onEdit}
+          onDelete={onDelete}
         />
       ))}
-    </section>
+    </div>
   );
 }
 

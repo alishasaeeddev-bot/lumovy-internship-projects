@@ -1,0 +1,124 @@
+.footer {
+    width: 100%;
+    flex-shrink: 0;
+    margin-top: auto;
+    background-color: #2563eb;
+    color: white;
+    border-top: 1px solid #1d4ed8;
+}
+
+.footer-content {
+    width: min(100%, 1250px);
+    margin: 0 auto;
+    padding: 24px;
+    display: grid;
+    grid-template-columns: 1.2fr 1fr 1fr auto;
+    align-items: center;
+    gap: 30px;
+}
+
+.footer-brand {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.footer-logo {
+    color: white;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.footer-tagline {
+    color: #dbeafe;
+    font-size: 13px;
+}
+
+.footer-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+}
+
+.footer-nav a {
+    color: #dbeafe;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.footer-nav a:hover {
+    color: white;
+}
+
+.footer-status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: #dbeafe;
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background-color: #22c55e;
+}
+
+.footer-copy {
+    color: #dbeafe;
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+@media (max-width: 950px) {
+    .footer-content {
+        grid-template-columns: 1fr 1fr;
+        gap: 20px 30px;
+    }
+
+    .footer-nav {
+        justify-content: flex-end;
+    }
+
+    .footer-status {
+        justify-content: flex-start;
+    }
+
+    .footer-copy {
+        text-align: right;
+    }
+}
+
+@media (max-width: 650px) {
+    .footer-content {
+        grid-template-columns: 1fr;
+        padding: 22px 18px;
+        gap: 15px;
+        text-align: center;
+    }
+
+    .footer-brand {
+        align-items: center;
+    }
+
+    .footer-nav {
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 12px 18px;
+    }
+
+    .footer-status {
+        justify-content: center;
+    }
+
+    .footer-copy {
+        text-align: center;
+    }
+}

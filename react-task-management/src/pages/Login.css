@@ -1,0 +1,218 @@
+.auth-page {
+    min-height: 70vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    box-sizing: border-box;
+}
+
+.auth-container {
+    width: 100%;
+    max-width: 430px;
+    padding: 32px;
+    box-sizing: border-box;
+    background-color: var(--card-background);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    transition:
+        background-color 0.3s ease,
+        border-color 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+.auth-container h1 {
+    margin: 0 0 8px;
+    color: var(--text-color);
+    font-size: 2rem;
+    line-height: 1.2;
+    text-align: center;
+}
+
+.auth-container > p {
+    margin: 0 0 24px;
+    color: var(--secondary-text);
+    line-height: 1.5;
+    text-align: center;
+}
+
+.auth-container form {
+    display: grid;
+    gap: 14px;
+}
+
+.auth-container input {
+    width: 100%;
+    min-height: 48px;
+    padding: 12px 14px;
+    box-sizing: border-box;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: var(--input-background);
+    color: var(--text-color);
+    font-family: inherit;
+    font-size: 1rem;
+    transition:
+        background-color 0.3s ease,
+        color 0.3s ease,
+        border-color 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+.auth-container input::placeholder {
+    color: var(--secondary-text);
+}
+
+.auth-container input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.auth-container form button {
+    width: 100%;
+    min-height: 48px;
+    margin-top: 4px;
+    padding: 12px 18px;
+    box-sizing: border-box;
+    border: none;
+    border-radius: 8px;
+    background-color: var(--primary-color);
+    color: white;
+    font-family: inherit;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition:
+        background-color 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.auth-container form button:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
+}
+
+.auth-container form button:active {
+    transform: scale(0.98);
+}
+
+.auth-container form button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.auth-error {
+    margin: 0;
+    padding: 10px 12px;
+    box-sizing: border-box;
+    border-radius: 8px;
+    background-color: rgba(220, 38, 38, 0.1);
+    color: var(--danger-color);
+    font-size: 0.9rem;
+    line-height: 1.5;
+    text-align: left;
+    overflow-wrap: anywhere;
+}
+
+.auth-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 24px 0;
+    color: var(--secondary-text);
+    font-size: 0.8rem;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background-color: var(--border-color);
+}
+
+.auth-divider span {
+    flex-shrink: 0;
+}
+
+.google-login-button {
+    width: 100%;
+    min-height: 44px;
+    display: flex;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.auth-footer {
+    margin: 22px 0 0;
+    color: var(--secondary-text);
+    text-align: center;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.auth-footer a {
+    color: var(--primary-color);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.auth-footer a:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 480px) {
+    .auth-page {
+        min-height: 65vh;
+        padding: 28px 16px;
+    }
+
+    .auth-container {
+        padding: 24px 18px;
+    }
+
+    .auth-container h1 {
+        font-size: 1.7rem;
+    }
+
+    .auth-container > p {
+        font-size: 14px;
+    }
+
+    .auth-container input,
+    .auth-container form button {
+        min-height: 46px;
+        font-size: 0.95rem;
+    }
+
+    .auth-footer {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 360px) {
+    .auth-page {
+        padding: 22px 12px;
+    }
+
+    .auth-container {
+        padding: 22px 14px;
+    }
+
+    .auth-container h1 {
+        font-size: 1.6rem;
+    }
+
+    .auth-container > p {
+        font-size: 13px;
+    }
+
+    .auth-divider {
+        margin: 20px 0;
+    }
+}

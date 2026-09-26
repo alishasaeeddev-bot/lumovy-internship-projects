@@ -1,26 +1,63 @@
-import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { selectTasks } from "../features/tasks/taskSelectors";
+import { Link, useParams } from "react-router-dom";
+import "./TaskDetails.css";
 
 function TaskDetails() {
   const { taskId } = useParams();
-  const tasks = useSelector(selectTasks);
+
+  const tasks = useSelector((state) => state.tasks.tasks);
+
   const task = tasks.find(
-    (task) => task.id.toString() === taskId
+    (item) =>
+      String(item._id || item.id) === String(taskId)
   );
 
   if (!task) {
-    return <h1>Task Not Found</h1>;
+    return (
+      <div className="task-details">
+        <h2>Task Not Found</h2>
+        <p>The task you are looking for does not exist.</p>
+
+        <Link to="/tasks">Back to Tasks</Link>
+      </div>
+    );
   }
 
   return (
-    <main>
+    <div className="task-details">
       <h1>{task.title}</h1>
-      <p>Category: {task.category}</p>
-      <p>Priority: {task.priority}</p>
-      <p>Due Date: {task.dueDate}</p>
-      <p>Status: {task.completed ? "Completed" : "Pending"}</p>
-    </main>
+
+      {task.description && (
+        <p>{task.description}</p>
+      )}
+
+      <div className="task-details-info">
+        <p>
+          <strong>Status:</strong>{" "}
+          {task.status || (task.completed ? "Completed" : "Pending")}
+        </p>
+
+        {task.priority && (
+          <p>
+            <strong>Priority:</strong> {task.priority}
+          </p>
+        )}
+
+        {task.category && (
+          <p>
+            <strong>Category:</strong> {task.category}
+          </p>
+        )}
+
+        {task.dueDate && (
+          <p>
+            <strong>Due Date:</strong> {task.dueDate}
+          </p>
+        )}
+      </div>
+
+      <Link to="/tasks">Back to Tasks</Link>
+    </div>
   );
 }
 

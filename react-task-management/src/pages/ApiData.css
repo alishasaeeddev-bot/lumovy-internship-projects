@@ -1,0 +1,260 @@
+
+.api-data-page {
+    width: min(100%, 1400px);
+    margin: 0 auto;
+    padding: 32px 24px 50px;
+    box-sizing: border-box;
+    color: var(--text-color);
+}
+
+.api-data-header {
+    margin-bottom: 30px;
+}
+
+.api-data-label {
+    margin: 0 0 6px;
+    color: var(--primary-color);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+}
+
+.api-data-header h1 {
+    margin: 0;
+    color: var(--text-color);
+    font-size: clamp(2rem, 4vw, 2.7rem);
+    line-height: 1.2;
+}
+
+.api-data-subtitle {
+    margin: 8px 0 0;
+    color: var(--secondary-text);
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+.api-users-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.api-user-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    min-width: 0;
+    padding: 20px;
+    box-sizing: border-box;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    background-color: var(--card-background);
+    box-shadow: var(--shadow);
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease,
+        background-color 0.3s ease;
+}
+
+.api-user-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-hover);
+    border-color: var(--primary-color);
+}
+
+.api-user-avatar {
+    width: 46px;
+    height: 46px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+    color: white;
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.api-user-content {
+    min-width: 0;
+}
+
+.api-user-content h2 {
+    margin: 0;
+    color: var(--text-color);
+    font-size: 16px;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+}
+
+.api-user-email {
+    margin: 5px 0 0;
+    color: var(--secondary-text);
+    font-size: 13px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+.api-user-location {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 10px;
+    color: var(--secondary-text);
+    font-size: 12px;
+}
+
+.api-user-location svg {
+    width: 15px;
+    height: 15px;
+    flex-shrink: 0;
+    color: var(--primary-color);
+}
+
+.api-data-message {
+    min-height: 220px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 30px 20px;
+    box-sizing: border-box;
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    background-color: var(--card-background);
+    color: var(--secondary-text);
+    text-align: center;
+    box-shadow: var(--shadow);
+}
+
+.api-data-message p {
+    margin: 0;
+    font-size: 14px;
+}
+
+.api-data-error svg {
+    width: 42px;
+    height: 42px;
+    color: var(--danger-color);
+}
+
+.api-data-error p {
+    color: var(--danger-color);
+    font-weight: 600;
+}
+
+.api-data-error button {
+    min-height: 40px;
+    padding: 0 16px;
+    border: none;
+    border-radius: 8px;
+    background-color: var(--primary-color);
+    color: white;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition:
+        background-color 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.api-data-error button:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 5px 12px rgba(37, 99, 235, 0.2);
+}
+
+.api-data-error button:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.api-loading-spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid var(--border-color);
+    border-top-color: var(--primary-color);
+    border-radius: 50%;
+    animation: api-data-spin 0.8s linear infinite;
+}
+
+@keyframes api-data-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@media (max-width: 1000px) {
+    .api-data-page {
+        padding: 30px 20px 45px;
+    }
+
+    .api-users-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 650px) {
+    .api-data-page {
+        padding: 26px 16px 40px;
+    }
+
+    .api-data-header {
+        margin-bottom: 24px;
+    }
+
+    .api-data-header h1 {
+        font-size: 2rem;
+    }
+
+    .api-data-subtitle {
+        font-size: 14px;
+    }
+
+    .api-users-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .api-user-card {
+        padding: 18px;
+    }
+}
+
+@media (max-width: 400px) {
+    .api-data-page {
+        padding: 22px 12px 35px;
+    }
+
+    .api-data-header h1 {
+        font-size: 1.8rem;
+    }
+
+    .api-data-subtitle {
+        font-size: 13px;
+    }
+
+    .api-user-card {
+        gap: 12px;
+        padding: 16px;
+    }
+
+    .api-user-avatar {
+        width: 42px;
+        height: 42px;
+        font-size: 15px;
+    }
+
+    .api-user-content h2 {
+        font-size: 15px;
+    }
+
+    .api-user-email {
+        font-size: 12px;
+    }
+}
